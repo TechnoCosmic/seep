@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -13,11 +13,9 @@
         "Other"
     ],
     "keywords": [
-        "highlight",
-        "navigate",
-        "select",
-        "find",
-        "search"
+        "refactor",
+        "c++",
+        "edit"
     ],
     "galleryBanner": {
         "color": "#040404",
@@ -32,19 +30,40 @@
     "contributes": {
         "commands": [
             {
-                "command": "seep.refactor",
-                "title": "Refactor",
+                "command": "seep.clearLine",
+                "title": "Clear Line",
                 "category": "Seep"
             },
             {
-                "command": "seep.clearLine",
-                "title": "Clear Line",
+                "command": "seep.showRefactorList",
+                "title": "Show Refactor List",
+                "category": "Seep"
+            },
+
+            {
+                "command": "seep.refactorToIndexedForLoop",
+                "title": "Refactor to Indexed For Loop",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.refactorToRangedForLoop",
+                "title": "Refactor to Ranged For Loop",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.refactorToWhileLoop",
+                "title": "Refactor to Ranged While Loop",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.refactorToLambda",
+                "title": "Refactor to Lambda",
                 "category": "Seep"
             }
         ],
         "keybindings": [
             {
-              "command": "seep.refactor",
+              "command": "seep.showRefactorList",
               "key": "ctrl+shift+r",
               "when": "editorTextFocus"
             },
