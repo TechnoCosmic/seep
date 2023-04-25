@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -25,7 +25,9 @@
         "type": "git",
         "url": "https://github.com/technocosmic/seep.git"
     },
-    "activationEvents": [],
+    "activationEvents": [
+        "onLanguage:cpp"
+    ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
