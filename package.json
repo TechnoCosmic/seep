@@ -1,0 +1,76 @@
+{
+    "name": "seep",
+    "displayName": "Seep",
+    "description": "Modest C++ Toolbox",
+    "author": "Dirk Mahoney",
+    "publisher": "tcri",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.77.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Other"
+    ],
+    "keywords": [
+        "highlight",
+        "navigate",
+        "select",
+        "find",
+        "search"
+    ],
+    "galleryBanner": {
+        "color": "#040404",
+        "theme": "dark"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/technocosmic/seep.git"
+    },
+    "activationEvents": [],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "seep.refactor",
+                "title": "Refactor",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.clearLine",
+                "title": "Clear Line",
+                "category": "Seep"
+            }
+        ],
+        "keybindings": [
+            {
+              "command": "seep.refactor",
+              "key": "ctrl+shift+r",
+              "when": "editorTextFocus"
+            },
+            {
+              "command": "seep.clearLine",
+              "key": "ctrl+shift+backspace",
+              "when": "editorTextFocus"
+            }
+        ]
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.77.0",
+        "@types/glob": "^8.1.0",
+        "@types/mocha": "^10.0.1",
+        "@types/node": "16.x",
+        "@typescript-eslint/eslint-plugin": "^5.56.0",
+        "@typescript-eslint/parser": "^5.56.0",
+        "glob": "^8.1.0",
+        "mocha": "^10.2.0",
+        "typescript": "^4.9.5",
+        "@vscode/test-electron": "^2.3.0"
+    }
+}
