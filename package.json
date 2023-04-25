@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -54,7 +54,7 @@
             },
             {
                 "command": "seep.refactorToWhileLoop",
-                "title": "Refactor to Ranged While Loop",
+                "title": "Refactor to While Loop",
                 "category": "Seep"
             },
             {

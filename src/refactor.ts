@@ -99,7 +99,7 @@ function addCmdRefactorWhile(context: vscode.ExtensionContext) {
 // Lambda
 // *********************************************************************************************************************
 
-const lambdaStr: string = 'const auto ${1:lambda} { [ ${2:captures} ]( ${3:params} ) {';
+const lambdaStr: string = 'const auto ${1:lambda}{ [ ${2:captures} ]( ${3:params} ) {';
 
 
 function refactorToLambda(): void {
