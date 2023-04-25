@@ -1,4 +1,4 @@
 # Features
 
-- Miscellaneous Basic C++ Refactoring Commands
+- Siomple snippet-based refactoring doodad
 - Some esoteric editor commands

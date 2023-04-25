@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -30,6 +30,15 @@
     ],
     "main": "./out/extension.js",
     "contributes": {
+        "configuration": {
+            "title": "Seep",
+            "properties": {
+                "seep.snippets": {
+                    "type": "array",
+                    "description": "The snippets that will show in the refactoring list"
+                }
+            }
+        },
         "commands": [
             {
                 "command": "seep.clearLine",
@@ -39,27 +48,6 @@
             {
                 "command": "seep.showRefactorList",
                 "title": "Show Refactor List",
-                "category": "Seep"
-            },
-
-            {
-                "command": "seep.refactorToIndexedForLoop",
-                "title": "Refactor to Indexed For Loop",
-                "category": "Seep"
-            },
-            {
-                "command": "seep.refactorToRangedForLoop",
-                "title": "Refactor to Ranged For Loop",
-                "category": "Seep"
-            },
-            {
-                "command": "seep.refactorToWhileLoop",
-                "title": "Refactor to While Loop",
-                "category": "Seep"
-            },
-            {
-                "command": "seep.refactorToLambda",
-                "title": "Refactor to Lambda",
                 "category": "Seep"
             }
         ],

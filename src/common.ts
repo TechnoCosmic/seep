@@ -1,6 +1,12 @@
 import * as vscode from 'vscode';
 
 
+export function getSetting<T>(str: string, def: T): T {
+    const config = vscode.workspace.getConfiguration('seep');
+    return config.get<T>(str, def);
+}
+
+
 export function getEndOfLineString(eol: vscode.EndOfLine): string {
     switch (eol) {
         case vscode.EndOfLine.CRLF: return '\r\n';
@@ -10,12 +16,12 @@ export function getEndOfLineString(eol: vscode.EndOfLine): string {
 }
 
 
-export function cleanClip(str: string, eol: string) {
+export function cleanString(str: string, eol: string) {
     return removeCommonLeadingWhitespace(trimBlankLines(str, eol));
 }
 
 
-export function surround(heading: string, trailing: string, isSnippet: boolean): void {
+export function replaceWithSnippet(snippet: string): void {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
 
@@ -26,8 +32,7 @@ export function surround(heading: string, trailing: string, isSnippet: boolean):
     if (!selRange) return;
 
     const eolStr: string = getEndOfLineString(document.eol);
-    const cleanedClip = cleanClip(document.getText(selRange), eolStr);
-    const selLines: string[] = cleanedClip.lines;
+    const cleanedClip = cleanString(document.getText(selRange), eolStr);
     const leadingWhite: string = ' '.repeat(cleanedClip.leadingWhite);
     let indent: string = '';
 
@@ -36,27 +41,11 @@ export function surround(heading: string, trailing: string, isSnippet: boolean):
         indent = ' '.repeat(charCount as number);
     }
 
-    const selStr: string = selLines.join(eolStr + indent + leadingWhite);
-    const snipStop: string = (isSnippet ? '$0' : '');
+    const cleanedSnippet = cleanString(snippet, eolStr);
+    const indentedSnippet = leadingWhite + cleanedSnippet.lines.join(eolStr + leadingWhite) + eolStr;
+    const snippetObj = new vscode.SnippetString(indentedSnippet);
 
-    const finalStr: string =
-        leadingWhite + heading + eolStr +
-        indent + leadingWhite + snipStop + selStr + eolStr +
-        leadingWhite + trailing + eolStr;
-
-    editor.edit(editBuilder => {
-        editBuilder.delete(selRange);
-
-        if (!isSnippet) {
-            editBuilder.insert(selRange.start, finalStr);
-        }
-    }).then(() => {
-        if (isSnippet) {
-            const snippetFinal = new vscode.SnippetString(finalStr);
-            editor.insertSnippet(snippetFinal, selRange.start);
-        }
-    });
-
+    editor.insertSnippet(snippetObj, selRange);
 }
 
 
