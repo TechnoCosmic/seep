@@ -34,12 +34,6 @@ export function replaceWithSnippet(snippet: string): void {
     const eolStr: string = getEndOfLineString(document.eol);
     const cleanedClip = cleanString(document.getText(selRange), eolStr);
     const leadingWhite: string = ' '.repeat(cleanedClip.leadingWhite);
-    let indent: string = '';
-
-    if (editor.options.insertSpaces) {
-        const charCount = editor.options.tabSize || 4;
-        indent = ' '.repeat(charCount as number);
-    }
 
     const cleanedSnippet = cleanString(snippet, eolStr);
     const indentedSnippet = leadingWhite + cleanedSnippet.lines.join(eolStr + leadingWhite) + eolStr;

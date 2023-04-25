@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "engines": {
         "vscode": "^1.77.0"
     },
