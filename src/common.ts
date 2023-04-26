@@ -21,6 +21,15 @@ export function cleanString(str: string, eol: string) {
 }
 
 
+function insertSnippetText(str: string, range: vscode.Range): void {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return;
+
+    const snippetObj = new vscode.SnippetString(str);
+    editor.insertSnippet(snippetObj, range);
+}
+
+
 export function replaceWithSnippet(snippet: string): void {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
@@ -28,18 +37,27 @@ export function replaceWithSnippet(snippet: string): void {
     const { document } = editor;
     if (!document) return;
 
+    const eolStr: string = getEndOfLineString(document.eol);
+
     const selRange = new vscode.Range(editor.selection.start, editor.selection.end);
     if (!selRange) return;
 
-    const eolStr: string = getEndOfLineString(document.eol);
-    const cleanedClip = cleanString(document.getText(selRange), eolStr);
-    const leadingWhite: string = ' '.repeat(cleanedClip.leadingWhite);
+    let indent: string = '';
 
-    const cleanedSnippet = cleanString(snippet, eolStr);
-    const indentedSnippet = leadingWhite + cleanedSnippet.lines.join(eolStr + leadingWhite) + eolStr;
-    const snippetObj = new vscode.SnippetString(indentedSnippet);
+    if (editor.options.insertSpaces) {
+        indent = ' '.repeat((editor.options.tabSize || 4) as number);
+    }
 
-    editor.insertSnippet(snippetObj, selRange);
+    const cleanedSelected = cleanString(document.getText(selRange), eolStr);
+    const leadingWhite: string = ' '.repeat(cleanedSelected.leadingWhite);
+    const indentedSelectedStr = indent + cleanedSelected.lines.join(eolStr + indent);
+
+    const regex = /\$\{TM_SELECTED_TEXT\}(?!\d)/g;
+    const replacedSnippet = snippet.replace(regex, indentedSelectedStr);
+    const cleanedSnippet = cleanString(replacedSnippet, eolStr);
+    const cleanedSnippetStr: string = leadingWhite + cleanedSnippet.lines.join(eolStr + leadingWhite) + eolStr;
+
+    insertSnippetText(cleanedSnippetStr, selRange);
 }
 
 
