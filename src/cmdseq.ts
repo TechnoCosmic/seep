@@ -28,7 +28,7 @@ function runSequence() {
 
     const curCmd: string = curSeqObj.commands[curSeqObj.curIndex];
 
-    if (curCmd != 'seep.runSequence') {
+    if (curCmd !== 'seep.runSequence') {
         vscode.commands.executeCommand(curCmd).then(runSequence);
     }
 }
