@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -36,6 +36,10 @@
                 "seep.snippets": {
                     "type": "array",
                     "description": "The snippets that will show in the refactoring list"
+                },
+                "seep.sequences": {
+                    "type": "array",
+                    "description": "A list of command sequences. These are VSCode command IDs that can be strung together like macros"
                 }
             }
         },
@@ -48,6 +52,11 @@
             {
                 "command": "seep.showRefactorList",
                 "title": "Show Refactor List",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.runSequence",
+                "title": "Run Command Sequence",
                 "category": "Seep"
             }
         ],

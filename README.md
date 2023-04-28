@@ -1,9 +1,9 @@
 # Features
 
 - Simple snippet-based refactoring doodad
+- Simple command sequences (kinda like macros for VSCode command IDs)
 - Some esoteric editor commands
 - Not much more than that
-- It's really not much
 
 ## Example settings for some C++ snippets
 
@@ -39,5 +39,28 @@
             "detail": "Converts the selected code to a local lambda declaration",
             "snippet": "const auto ${1:lambda}{ [ ${2:captures} ]( ${3:params} ) {\r\n$0${TM_SELECTED_TEXT}\r\n} };\r\n"
         },
+    ]
+```
+
+## Example (silly) command sequences
+
+```
+    "seep.sequences": [
+        {
+            "label": "Zoomy Zen",
+            "detail": "Enter Zoomed Zen Mode",
+            "commands": [
+                "workbench.action.toggleZenMode",
+                "editor.action.clipboardPasteAction"
+            ]
+        },
+        {
+            "label": "Paste Paste",
+            "detail": "Paste twice, because bits are free",
+            "commands": [
+                "editor.action.clipboardPasteAction",
+                "editor.action.clipboardPasteAction"
+            ]
+        }
     ]
 ```

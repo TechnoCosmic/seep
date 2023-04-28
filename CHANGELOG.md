@@ -1,5 +1,9 @@
 # Change Log
 
+## [0.0.9]
+
+- Command sequences
+
 ## [0.0.5]
 
 - Became a generalised snippet inserter
