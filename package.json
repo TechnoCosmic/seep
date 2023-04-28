@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -52,6 +52,11 @@
             {
                 "command": "seep.showRefactorList",
                 "title": "Show Refactor List",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.runCommand",
+                "title": "Run Command by ID",
                 "category": "Seep"
             },
             {

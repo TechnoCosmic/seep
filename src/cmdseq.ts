@@ -26,7 +26,27 @@ function runSequence() {
         return;
     }
 
-    vscode.commands.executeCommand(curSeqObj.commands[curSeqObj.curIndex]).then(runSequence);
+    const curCmd: string = curSeqObj.commands[curSeqObj.curIndex];
+
+    if (curCmd != 'seep.runSequence') {
+        vscode.commands.executeCommand(curCmd).then(runSequence);
+    }
+}
+
+
+function addCmdRunCommand(context: vscode.ExtensionContext) {
+    let cmd = vscode.commands.registerCommand('seep.runCommand', async () => {
+        const userInput = await vscode.window.showInputBox({
+            prompt: "Enter a command ID to run",
+            placeHolder: "seep.runSequence"
+        });
+
+        if (userInput) {
+            vscode.commands.executeCommand(userInput);
+        }
+    });
+
+    context.subscriptions.push(cmd);
 }
 
 
@@ -51,4 +71,5 @@ function addCmdRunSequence(context: vscode.ExtensionContext) {
 
 export function connect(context: vscode.ExtensionContext) {
     addCmdRunSequence(context);
+    addCmdRunCommand(context);
 }
