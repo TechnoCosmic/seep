@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -44,6 +44,21 @@
             }
         },
         "commands": [
+            {
+                "command": "seep.toDec",
+                "title": "Convert Selection to Decimal",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.toHex",
+                "title": "Convert Selection to Hexadecimal",
+                "category": "Seep"
+            },
+            {
+                "command": "seep.toBin",
+                "title": "Convert Selection to Binary",
+                "category": "Seep"
+            },
             {
                 "command": "seep.clearLine",
                 "title": "Clear Line",
