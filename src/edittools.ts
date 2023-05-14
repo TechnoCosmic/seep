@@ -68,10 +68,9 @@ function addCmdClearLine(context: vscode.ExtensionContext) {
 
 
 function addSectionBreakSuggestor(context: vscode.ExtensionContext) {
-    let inlineHandler = vscode.languages.registerInlineCompletionItemProvider(
-        { scheme: 'file', language: 'cpp' }, new HistoryInlineCompletionProvider()
-    );
-    context.subscriptions.push(inlineHandler);
+    context.subscriptions.push(vscode.languages.registerInlineCompletionItemProvider(
+        { scheme: 'file', language: '*' }, new HistoryInlineCompletionProvider()
+    ));
 }
 
 
