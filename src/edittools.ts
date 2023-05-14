@@ -1,4 +1,37 @@
 import * as vscode from 'vscode';
+import * as common from './common';
+
+
+function getFirstRulerPosition(): number {
+    const config = vscode.workspace.getConfiguration('editor');
+    const rulerPositions: number[] = config.get<number[]>('rulers', []);
+
+    return Math.min(...rulerPositions);
+}
+
+
+export class HistoryInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
+    provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position, context: vscode.InlineCompletionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
+        let suggestions: vscode.InlineCompletionItem[] = [];
+        const rulerPosn: number = getFirstRulerPosition();
+
+        if (rulerPosn === 0) return suggestions;
+
+        const lineTextOrig = document.lineAt(position.line).text;
+        const lineText = lineTextOrig.substring(0, position.character).trimStart();
+
+        if (!lineText.startsWith("// *")) return suggestions;
+
+        const indent: number = common.getCurrentLineIndentation().length;
+        const str: string = "// " + '*'.repeat(rulerPosn - indent - 3);
+
+        const suggestion = new vscode.InlineCompletionItem(str);
+        suggestion.range = new vscode.Range(position.line, indent, position.line, position.character);
+        suggestions.push(suggestion);
+
+        return suggestions;
+    }
+}
 
 
 function addCmdClearLine(context: vscode.ExtensionContext) {
@@ -34,6 +67,15 @@ function addCmdClearLine(context: vscode.ExtensionContext) {
 }
 
 
+function addSectionBreakSuggestor(context: vscode.ExtensionContext) {
+    let inlineHandler = vscode.languages.registerInlineCompletionItemProvider(
+        { scheme: 'file', language: 'cpp' }, new HistoryInlineCompletionProvider()
+    );
+    context.subscriptions.push(inlineHandler);
+}
+
+
 export function connect(context: vscode.ExtensionContext) {
     addCmdClearLine(context);
+    addSectionBreakSuggestor(context);
 }

@@ -7,6 +7,18 @@ export function getSetting<T>(str: string, def: T): T {
 }
 
 
+export function getCurrentLineIndentation(): string {
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return "";
+
+    const position = editor.selection.active;
+    const line = editor.document.lineAt(position.line);
+    const leadingWhitespace = line.text.match(/^\s*/);
+
+    return leadingWhitespace ? leadingWhitespace[0] : "";
+}
+
+
 export function getEndOfLineString(eol: vscode.EndOfLine): string {
     switch (eol) {
         case vscode.EndOfLine.CRLF: return '\r\n';
