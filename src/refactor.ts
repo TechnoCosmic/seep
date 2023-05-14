@@ -73,7 +73,11 @@ function getLargestNumber(inputString: string, regex: any, fromBase: number): nu
     let match;
 
     while ((match = regex.exec(inputString)) !== null) {
-        const inputValue = match[0];
+        let inputValue: string = match[0] || '';
+
+        if (inputValue.startsWith('0x')) inputValue = inputValue.substring(2);
+        if (inputValue.startsWith('0b')) inputValue = inputValue.substring(2);
+
         const decimalValue = parseInt(inputValue, fromBase);
 
         if (decimalValue > maxNumber) {
@@ -87,6 +91,9 @@ function getLargestNumber(inputString: string, regex: any, fromBase: number): nu
 
 function changeBase(inputString: string, regex: any, fromBase: number, toBase: number, digits: number): string {
     const convertedString: string = inputString.replace(regex, (match) => {
+        if (match.startsWith('0x')) match = match.substring(2);
+        if (match.startsWith('0b')) match = match.substring(2);
+
         const decimalValue = parseInt(match, fromBase);
         const convertedValue = decimalValue.toString(toBase);
 
@@ -96,7 +103,7 @@ function changeBase(inputString: string, regex: any, fromBase: number, toBase: n
         if (toBase === 16) prefix = "0x";
 
         const padChar: string = toBase === 10 ? '' : '0';
-        return prefix + convertedValue.padStart(digits, padChar);
+        return prefix + convertedValue.padStart(digits, padChar).toUpperCase();
     });
 
     return convertedString;
