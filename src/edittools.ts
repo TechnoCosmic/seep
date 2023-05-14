@@ -20,7 +20,7 @@ export class HistoryInlineCompletionProvider implements vscode.InlineCompletionI
         const lineTextOrig = document.lineAt(position.line).text;
         const lineText = lineTextOrig.substring(0, position.character).trimStart();
 
-        if (!lineText.startsWith("// *")) return suggestions;
+        if (!lineText.startsWith("// ")) return suggestions;
 
         const indent: number = common.getCurrentLineIndentation().length;
         const str: string = "// " + '*'.repeat(rulerPosn - indent - 3);
