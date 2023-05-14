@@ -2,6 +2,11 @@ import * as vscode from 'vscode';
 import * as common from './common';
 
 
+const BINARY_REGEX = /(?<![\'\"])(?:\b0b[01]+(?:\'[01]+)?\b)(?![\'\"])/g;
+const DECIMAL_REGEX = /(?<![\'\"])(?:\b\d+(?:\'\d+)?\b)(?![\'\"])/g;
+const HEXDECIMAL_REGEX = /(?<![\'\"])(?:\b0x[0-9A-Fa-f]+(?:\'[0-9A-Fa-f]+)?\b)(?![\'\"])/g;
+
+
 class RefactorOptionItem implements vscode.QuickPickItem {
     label: string = '';
     detail: string = '';
@@ -54,17 +59,27 @@ async function makeLocal() {
 
 
 function changeFromHex(inputString: string, toBase: number, digits: number): string {
-    return changeBase(inputString, /\b0x[0-9A-Fa-f]+\b/g, 16, toBase, digits);
+    return changeBase(inputString, HEXDECIMAL_REGEX, 16, toBase, digits);
 }
 
 
 function changeFromDecimal(inputString: string, toBase: number, digits: number): string {
-    return changeBase(inputString, /\b\d+\b/g, 10, toBase, digits);
+    return changeBase(inputString, DECIMAL_REGEX, 10, toBase, digits);
 }
 
 
 function changeFromBinary(inputString: string, toBase: number, digits: number): string {
-    return changeBase(inputString, /\b0b[01]+\b/g, 2, toBase, digits);
+    return changeBase(inputString, BINARY_REGEX, 2, toBase, digits);
+}
+
+
+function cleanNumber(str: string): string {
+    let cur: string = str;
+
+    if (cur.startsWith('0x')) cur = cur.substring(2);
+    if (cur.startsWith('0b')) cur = cur.substring(2);
+
+    return cur.replace("'", "");
 }
 
 
@@ -73,11 +88,7 @@ function getLargestNumber(inputString: string, regex: any, fromBase: number): nu
     let match;
 
     while ((match = regex.exec(inputString)) !== null) {
-        let inputValue: string = match[0] || '';
-
-        if (inputValue.startsWith('0x')) inputValue = inputValue.substring(2);
-        if (inputValue.startsWith('0b')) inputValue = inputValue.substring(2);
-
+        const inputValue: string = cleanNumber(match[0] || '');
         const decimalValue = parseInt(inputValue, fromBase);
 
         if (decimalValue > maxNumber) {
@@ -91,8 +102,7 @@ function getLargestNumber(inputString: string, regex: any, fromBase: number): nu
 
 function changeBase(inputString: string, regex: any, fromBase: number, toBase: number, digits: number): string {
     const convertedString: string = inputString.replace(regex, (match) => {
-        if (match.startsWith('0x')) match = match.substring(2);
-        if (match.startsWith('0b')) match = match.substring(2);
+        match = cleanNumber(match);
 
         const decimalValue = parseInt(match, fromBase);
         const convertedValue = decimalValue.toString(toBase);
@@ -118,6 +128,22 @@ function getMinimumBytes(num: number): number {
 }
 
 
+function getOverallLargestNumber(str: string): number {
+    const largestHexNumber: number = getLargestNumber(str, HEXDECIMAL_REGEX, 16);
+    const largestDecNumber: number = getLargestNumber(str, DECIMAL_REGEX, 10);
+    const largestBinNumber: number = getLargestNumber(str, BINARY_REGEX, 2);
+    return Math.max(largestHexNumber, largestDecNumber, largestBinNumber);
+}
+
+
+function getPaddingDigits(str: string, toBase: number): number {
+    const largestNumber: number = getOverallLargestNumber(str);
+    const byteCount: number = getMinimumBytes(largestNumber);
+    const digits: number = Math.ceil(byteCount * 8 / Math.log2(toBase));
+    return digits;
+}
+
+
 function selectionToBase(convFunc1: any, convFunc2: any, toBase: number) {
     const editor = vscode.window.activeTextEditor;
     if (!editor) return;
@@ -126,13 +152,7 @@ function selectionToBase(convFunc1: any, convFunc2: any, toBase: number) {
     if (!document) return;
 
     const selStr: string = document.getText(editor.selection);
-
-    const largestHexNumber: number = getLargestNumber(selStr, /\b0x[0-9A-Fa-f]+\b/g, 16);
-    const largestDecNumber: number = getLargestNumber(selStr, /\b\d+\b/g, 10);
-    const largestBinNumber: number = getLargestNumber(selStr, /\b0b[01]+\b/g, 2);
-    const largestNumber: number = Math.max(largestHexNumber, largestDecNumber, largestBinNumber);
-    const byteCount: number = getMinimumBytes(largestNumber);
-    const digits: number = Math.ceil(byteCount * 8 / Math.log2(toBase));
+    const digits: number = getPaddingDigits(selStr, toBase);
     const outStr: string = convFunc1(convFunc2(selStr, toBase, digits), toBase, digits);
 
     editor.edit(editBuilder => {
