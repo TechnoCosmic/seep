@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -44,6 +44,11 @@
             }
         },
         "commands": [
+            {
+                "command": "seep.makeLocal",
+                "title": "Convert Selection to Local",
+                "category": "Seep"
+            },
             {
                 "command": "seep.toDec",
                 "title": "Convert Selection to Decimal",
