@@ -3,7 +3,7 @@ import * as common from './common';
 
 
 const BINARY_REGEX = /(?<![\'\"])(?:\b0b[01]+(?:\'[01]+)?\b)(?![\'\"])/g;
-const DECIMAL_REGEX = /(?<![\'\"])(?:\b\d+(?:\'\d+)?\b)(?![\'\"])/g;
+const DECIMAL_REGEX = /(?<![\'\"])(?<![.eE-])(?!\d*[.eE])\b\d+(?:\'\d+)?\b(?![.eE])(?![\'\"])/g;
 const HEXDECIMAL_REGEX = /(?<![\'\"])(?:\b0x[0-9A-Fa-f]+(?:\'[0-9A-Fa-f]+)?\b)(?![\'\"])/g;
 
 
