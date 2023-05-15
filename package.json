@@ -4,7 +4,7 @@
     "description": "Modest C++ Toolbox",
     "author": "Dirk Mahoney",
     "publisher": "tcri",
-    "version": "0.1.6",
+    "version": "0.2.0",
     "engines": {
         "vscode": "^1.77.0"
     },
@@ -35,6 +35,10 @@
         "configuration": {
             "title": "Seep",
             "properties": {
+                "seep.keywords": {
+                    "type": "array",
+                    "description": "Keywords or short code clips to offer as inline suggestions"
+                },
                 "seep.snippets": {
                     "type": "array",
                     "description": "The snippets that will show in the refactoring list"

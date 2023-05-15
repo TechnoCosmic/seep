@@ -9,17 +9,47 @@ function getFirstRulerPosition(): number {
     return Math.min(...rulerPositions);
 }
 
+const keywords: string[] = [
+];
+
+
+export class KeywordInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
+    provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position, context: vscode.InlineCompletionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
+        let suggestions: vscode.InlineCompletionItem[] = [];
+
+        const editor = vscode.window.activeTextEditor;
+        if (!editor) return suggestions;
+
+        const word = document.getText(document.getWordRangeAtPosition(editor.selection.active));
+
+        if (word.length >= 2) {
+            const keywords: string[] = common.getSetting<string[]>('keywords', []);
+
+            for (const keyw of keywords) {
+                const pref: string = keyw.substring(0, word.length);
+
+                if (word.startsWith(pref)) {
+                    const thingy = new vscode.InlineCompletionItem(keyw.substring(word.length));
+                    thingy.range = new vscode.Range(position.line, position.character, position.line, position.character);
+                    suggestions.push(thingy);
+                }
+            }
+        }
+
+        return suggestions;
+    }
+}
 
 export class HistoryInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position, context: vscode.InlineCompletionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
         let suggestions: vscode.InlineCompletionItem[] = [];
-        const rulerPosn: number = getFirstRulerPosition();
-
-        if (rulerPosn === 0) return suggestions;
 
         const lineTextOrig = document.lineAt(position.line).text;
         const lineText = lineTextOrig.substring(0, position.character).trimStart();
         const isAtEol = position.character === lineTextOrig.length;
+
+        const rulerPosn: number = getFirstRulerPosition();
+        if (rulerPosn === 0) return suggestions;
 
         if (!isAtEol) return suggestions;
         if (!lineText.startsWith("// ")) return suggestions;
@@ -72,6 +102,10 @@ function addCmdClearLine(context: vscode.ExtensionContext) {
 function addSectionBreakSuggestor(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.languages.registerInlineCompletionItemProvider(
         { scheme: 'file', language: '*' }, new HistoryInlineCompletionProvider()
+    ));
+
+    context.subscriptions.push(vscode.languages.registerInlineCompletionItemProvider(
+        { scheme: 'file', language: '*' }, new KeywordInlineCompletionProvider()
     ));
 }
 
