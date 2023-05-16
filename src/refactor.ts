@@ -1,10 +1,9 @@
 import * as vscode from 'vscode';
 import * as common from './common';
 
-
-const BINARY_REGEX = /(?<![\'\"])(?:\b0b[01]+(?:\'[01]+)?\b)(?![\'\"])/g;
-const DECIMAL_REGEX = /(?<![\'\"])(?<![.eE-])(?!\d*[.eE])\b\d+(?:\'\d+)?\b(?![.eE])(?![\'\"])/g;
-const HEXDECIMAL_REGEX = /(?<![\'\"])(?:\b0x[0-9A-Fa-f]+(?:\'[0-9A-Fa-f]+)?\b)(?![\'\"])/g;
+const BINARY_REGEX = /\b(?<!\"\s*)(0b([01]+'?)+(?![\.]))\b/g;
+const HEXDECIMAL_REGEX = /\b0x([0-9|a-f|A-F]+'?)+\b/g;
+const DECIMAL_REGEX = /\b(?<![\.\-\'])([0-9]+'?)+(?!\.)\b/g;
 
 
 class RefactorOptionItem implements vscode.QuickPickItem {
@@ -73,6 +72,24 @@ function changeFromBinary(inputString: string, toBase: number, digits: number): 
 }
 
 
+function insertTickMarks(num: string, interval: number) {
+    let result = '';
+    let tickCounter = 0;
+
+    for (let i = num.length - 1; i >= 0; i--) {
+        result = num[i] + result;
+        ++tickCounter;
+
+        if (tickCounter === interval && i > 0) {
+            result = "'" + result;
+            tickCounter = 0;
+        }
+    }
+
+    return result;
+}
+
+
 function cleanNumber(str: string): string {
     let cur: string = str;
 
@@ -108,12 +125,20 @@ function changeBase(inputString: string, regex: any, fromBase: number, toBase: n
         const convertedValue = decimalValue.toString(toBase);
 
         let prefix: string = "";
-        if (toBase === 2) prefix = "0b";
-        if (toBase === 8) prefix = "0";
-        if (toBase === 16) prefix = "0x";
+        let intv: number = 3;
+
+        if (toBase === 2) {
+            prefix = "0b";
+            intv = 4;
+        }
+
+        else if (toBase === 16) {
+            prefix = "0x";
+            intv = 4;
+        }
 
         const padChar: string = toBase === 10 ? '' : '0';
-        return prefix + convertedValue.padStart(digits, padChar).toUpperCase();
+        return prefix + insertTickMarks(convertedValue.padStart(digits, padChar).toUpperCase(), intv);
     });
 
     return convertedString;

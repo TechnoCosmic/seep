@@ -21,18 +21,22 @@ export class KeywordInlineCompletionProvider implements vscode.InlineCompletionI
         if (!editor) return suggestions;
 
         const word = document.getText(document.getWordRangeAtPosition(editor.selection.active));
+        const lineTextOrig = document.lineAt(position.line).text;
+        const isAtEol = position.character === lineTextOrig.length;
+        const nextChar: string = lineTextOrig.substring(position.character)[0];
 
-        if (word.length >= 2) {
-            const keywords: string[] = common.getSetting<string[]>('keywords', []);
+        if (word.length < 3) return suggestions;
+        if (!isAtEol && nextChar !== ' ') return suggestions;
 
-            for (const keyw of keywords) {
-                const pref: string = keyw.substring(0, word.length);
+        const keywords: string[] = common.getSetting<string[]>('keywords', []);
 
-                if (word.startsWith(pref)) {
-                    const thingy = new vscode.InlineCompletionItem(keyw.substring(word.length));
-                    thingy.range = new vscode.Range(position.line, position.character, position.line, position.character);
-                    suggestions.push(thingy);
-                }
+        for (const keyw of keywords) {
+            const pref: string = keyw.substring(0, word.length);
+
+            if (word.startsWith(pref)) {
+                const thingy = new vscode.InlineCompletionItem(keyw.substring(word.length));
+                thingy.range = new vscode.Range(position.line, position.character, position.line, position.character);
+                suggestions.push(thingy);
             }
         }
 
