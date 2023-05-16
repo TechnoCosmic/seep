@@ -44,6 +44,7 @@ export class KeywordInlineCompletionProvider implements vscode.InlineCompletionI
     }
 }
 
+
 export class HistoryInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position, context: vscode.InlineCompletionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
         let suggestions: vscode.InlineCompletionItem[] = [];
