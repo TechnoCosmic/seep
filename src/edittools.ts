@@ -2,6 +2,21 @@ import * as vscode from 'vscode';
 import * as common from './common';
 
 
+function findAnagram(dictionary: string[], input: string): string | null {
+    const sortedInput = input.toLowerCase().split('').sort().join('');
+
+    for (const word of dictionary) {
+        const sortedWord = word.toLowerCase().split('').sort().join('');
+
+        if (sortedWord === sortedInput) {
+            return word;
+        }
+    }
+
+    return null;
+}
+
+
 function getFirstRulerPosition(): number {
     const config = vscode.workspace.getConfiguration('editor');
     const rulerPositions: number[] = config.get<number[]>('rulers', []);
@@ -26,7 +41,7 @@ export class KeywordInlineCompletionProvider implements vscode.InlineCompletionI
         const nextChar: string = lineTextOrig.substring(position.character)[0];
 
         if (word.length < 3) return suggestions;
-        if (!isAtEol && nextChar !== ' ') return suggestions;
+        if (!(isAtEol || typeof Symbol(nextChar) === 'symbol' || nextChar === ' ')) return suggestions;
 
         const keywords: string[] = common.getSetting<string[]>('keywords', []);
 
