@@ -24,9 +24,6 @@ function getFirstRulerPosition(): number {
     return Math.min(...rulerPositions);
 }
 
-const keywords: string[] = [
-];
-
 
 export class KeywordInlineCompletionProvider implements vscode.InlineCompletionItemProvider {
     provideInlineCompletionItems(document: vscode.TextDocument, position: vscode.Position, context: vscode.InlineCompletionContext, token: vscode.CancellationToken): vscode.ProviderResult<vscode.InlineCompletionItem[] | vscode.InlineCompletionList> {
